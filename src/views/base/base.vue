@@ -79,7 +79,7 @@
             <Col span="4" class="layout-menu-left">
                 <div class="layout-logo-left">
                         <img src="../../images/logo.jpg"></img>
-                        <strong>smallsnail-Wh</strong>
+                        <strong>AIC</strong>
                     </div>
                 <Menu active-name="1-2" theme="dark" width="auto" :open-names="['1']" @on-select="m=>{select(m)}">
                     <Submenu v-for="pmenu in menuList" :name="pmenu.id" :key="pmenu.id">
@@ -114,7 +114,7 @@
                     <router-view></router-view>
                 </div>
                 <div class="layout-copy">
-                    2017-2018 &copy; smallsnail-wh
+                    2018-2019 &copy; Asiainfo-dltc AIC
                 </div>
             </Col>
         </Row>
