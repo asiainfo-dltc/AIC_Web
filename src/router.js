@@ -13,14 +13,14 @@ const routers = [
 	{
 	    path: '/',
 	    meta: {
-	        title: 'smallsnail-wh'
+	        title: 'AIC'
 	    },
 	    component: (resolve) => require(['./views/index.vue'], resolve)
 	},
 	{
 	    path: '/index',
 	    meta: {
-	        title: 'smallsnail-wh'
+	        title: 'AIC'
 	    },
 	    component: (resolve) => require(['./views/index.vue'], resolve)
 	},
