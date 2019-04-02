@@ -98,7 +98,7 @@
                 <div class="layout-header">
                     <strong>{{userName}}</strong>
                     <Dropdown trigger="click" style="margin-right: 50px" @on-click="m=>{dropdownSelect(m)}">
-                        <img src="../../images/user.jpg"></img>
+                        <img src="../../images/logo.jpg"></img>
                         <DropdownMenu class="dropdown-menu" slot="list">
                             <DropdownItem>退出</DropdownItem>
                         </DropdownMenu>
