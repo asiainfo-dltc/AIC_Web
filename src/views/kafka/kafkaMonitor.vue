@@ -2,117 +2,47 @@
     <div style="margin: 20px;">
         <div>
             <Row style="margin-bottom: 25px;">
-                <Col span="8">消费组：
-                    <Input v-model="groupId" placeholder="请输入..." style="width:200px"></Input>
+                <Col span="12">消费组：
+                    <Select v-model="menuId"  multiple style="width: 400px">
+                        <Option v-for="item in menuList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
                 </Col>
-                <Col span="8">
+
+            </Row>
+            <Row style="margin-bottom: 25px;">
+                <Col span="8">时间：
                     <DatePicker type="date" placeholder="Select date" style="width: 200px"></DatePicker>
                 </Col>
                 <Col span="8"><Button type="primary" shape="circle" icon="ios-search" @click="search()">搜索</Button></Col>
-            </Row>
-
+                </Row>
         </div>
-        <div>
-            <ul>
-               <!-- <li>
-                    <Button type="primary" icon="plus-round" @click="openNewModal()">新建</Button>
-                    <Button type="success" icon="wrench" @click="openModifyModal()">修改</Button>
-                    <Button type="error" icon="trash-a" @click="del()">删除</Button>
-                </li>-->
-                <li>
+        <div >
+
                     <div style="padding: 10px 0;">
-                        <Table border :columns="columns1" :data="data1" :height="400" @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
+                        <template>
+                            <Table :columns="columns10" :data="data9"></Table>
+                        </template>
+<!--
+                        <Table border :columns="columns1" :data="data1"  @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
+-->
                     </div>
-                </li>
-                <li>
+
+
                     <div style="text-align: right;">
                         <Page :total="total" :page-size="pageInfo.pageSize" show-elevator show-total @on-change="e=>{pageSearch(e)}"></Page>
                     </div>
-                </li>
-            </ul>
+
+
         </div>
-        <!--添加modal-->
-        <Modal :mask-closable="false" :visible.sync="newModal" :loading = "loading" v-model="newModal" width="600" title="新建" @on-ok="newOk('menuNew')" @on-cancel="cancel()">
-            <Form ref="menuNew" :model="menuNew" :rules="ruleNew" :label-width="80" >
-                <Row>
-                    <Col span="12">
-                        <Form-item label="菜单名称:" prop="name">
-                            <Input v-model="menuNew.name" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                    <Col span="12">
-                        <Form-item label="路径:" prop="url">
-                            <Input v-model="menuNew.url" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <Form-item label="父类ID:" prop="parentId">
-                            <Input v-model="menuNew.parentId" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                    <Col span="12">
-                        <Form-item label="排序号:" prop="sort">
-                            <Input v-model="menuNew.sort" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <Form-item label="图标:" prop="icon">
-                            <Input v-model="menuNew.icon" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Form-item label="描述:" prop="remark">
-                    <Input v-model="menuNew.remark" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
-                </Form-item>
-            </Form>
-        </Modal>
-        <!--修改modal-->
-        <Modal :mask-closable="false" :visible.sync="modifyModal" :loading = "loading" v-model="modifyModal" width="600" title="修改" @on-ok="modifyOk('menuModify')" @on-cancel="cancel()">
-            <Form ref="menuModify" :model="menuModify" :rules="ruleModify" :label-width="80" >
-                <Row>
-                    <Col span="12">
-                        <Form-item label="菜单名称:" prop="name">
-                            <Input v-model="menuModify.name" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                    <Col span="12">
-                        <Form-item label="路径:" prop="url">
-                            <Input v-model="menuModify.url" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <Form-item label="父类ID:" prop="parentId">
-                            <Input v-model="menuModify.parentId" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                    <Col span="12">
-                        <Form-item label="排序号:" prop="sort">
-                            <Input v-model="menuModify.sort" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <Form-item label="图标:" prop="icon">
-                            <Input v-model="menuModify.icon" style="width: 204px"/>
-                        </Form-item>
-                    </Col>
-                </Row>
-                <Form-item label="描述:" prop="remark">
-                    <Input v-model="menuModify.remark" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></Input>
-                </Form-item>
-            </Form>
-        </Modal>
+
+
+
     </div>
 </template>
 <script>
+    import expandRow from '../../template/table-expand.vue';
     export default {
+        components: { expandRow },
         data () {
             return {
                 /*消费组*/
@@ -136,112 +66,18 @@
                     page:0,
                     pageSize:10
                 },
-                /*menu实体*/
-                menu:{
-                    id:null,
-                    name:null,
-                    url:null,
-                    parentId:null,
-                    sort:null,
-                    remark:null,
-                    icon:null
-                },
-                /*用于添加的menu实体*/
-                menuNew:{
-                    id:null,
-                    name:null,
-                    url:null,
-                    parentId:null,
-                    sort:null,
-                    remark:null,
-                    icon:null
-                },
-                /*用于修改的menu实体*/
-                menuModify:{
-                    id:null,
-                    name:null,
-                    url:null,
-                    parentId:null,
-                    sort:null,
-                    remark:null,
-                    icon:null
-                },
-                /*新建验证*/
-                ruleNew:{
-                    name: [
-                        { type:'string',required: true, message: '输入菜单名', trigger: 'blur' }
-                    ],
-                    url: [
-                        { type:'string',required: true, message: '输入路径', trigger: 'blur' }
-                    ],
-                    parentId: [
-                        { required: true, message: '输入父类ID', trigger: 'blur' },
-                        {validator(rule, value, callback) {
-                                if (!Number.isInteger(+value)) {
-                                    callback(new Error('请输入数字'));
-                                } else {
-                                    callback();
-                                }
-
-                            }, trigger: 'blur'}
-                    ],
-                    sort: [
-                        { required: true, message: '输入排序', trigger: 'blur' },
-                        {validator(rule, value, callback) {
-                                if (!Number.isInteger(+value)) {
-                                    callback(new Error('请输入数字'));
-                                } else {
-                                    callback();
-                                }
-
-                            }, trigger: 'blur'}
-                    ],
-                    icon: [
-                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
-                    ]
-                },
-                /*修改验证*/
-                ruleModify:{
-                    name: [
-                        { type:'string',required: true, message: '输入菜单名', trigger: 'blur' }
-                    ],
-                    url: [
-                        { type:'string',required: true, message: '输入路径', trigger: 'blur' }
-                    ],
-                    parentId: [
-                        { required: true, message: '输入父类ID', trigger: 'blur' },
-                        {validator(rule, value, callback) {
-                                if (!Number.isInteger(+value)) {
-                                    callback(new Error('请输入数字'));
-                                } else {
-                                    callback();
-                                }
-
-                            }, trigger: 'blur'}
-                    ],
-                    sort: [
-                        { required: true, message: '输入排序', trigger: 'blur' },
-                        {validator(rule, value, callback) {
-                                if (!Number.isInteger(+value)) {
-                                    callback(new Error('请输入数字'));
-                                } else {
-                                    callback();
-                                }
-
-                            }, trigger: 'blur'}
-                    ],
-                    icon: [
-                        { type:'string',required: true, message: '输入图标', trigger: 'blur' }
-                    ]
-                },
-                /*菜单列表*/
-                menuList:[],
-                /*生产类型表显示字段*/
-                columns1: [
+                columns10: [
                     {
-                        type: 'selection',
-                        width: 60,
-                        align: 'center'
+                        type: 'expand',
+                        width: 50,
+                        render: (h, params) => {
+                            return h(expandRow, {
+                                props: {
+                                    row: params.row,
+                                    columns:this.columns1
+                                }
+                            })
+                        }
                     },
                     {
                         title: 'groupId',
@@ -250,7 +86,104 @@
                     {
                         title: 'topic',
                         key: 'topic'
+                    }
+                ],
+                data9: [
+                    {
+                        groupId: 'T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221',
+                        topic: 18,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+
                     },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    }
+                    ,
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    }
+                    ,
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    },
+                    {
+                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                        topic: 25,
+                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
+                    }
+                ],
+                /*菜单列表*/
+                menuList:[{
+                    label:"T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221",value:"1"
+                }, {
+                        label:"T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221",value:"2"
+                    },
+                    {
+                        label:"T0000_CB.DOMAIN3.ROUTER.ACCESS_0630_221",value:"3"
+                    },{
+                        label:"T0000_CB.DOMAIN4.ROUTER.ACCESS_0630_221",value:"4"
+                    },{
+                        label:"T0000_CB.DOMAIN5.ROUTER.ACCESS_0630_221",value:"5"
+                    },{
+                        label:"T0000_CB.DOMAIN6.ROUTER.ACCESS_0630_221",value:"6"
+                    },{
+                        label:"T0000_CB.DOMAIN7.ROUTER.ACCESS_0630_221",value:"7"
+                    },{
+                        label:"T0000_CB.DOMAIN8.ROUTER.ACCESS_0630_221",value:"8"
+                    },{
+                        label:"T0000_CB.DOMAIN1.MAIN.ROUTER.ACCESS_0630_221",value:"9"
+                    },{
+                        label:"T0000_CB.DOMAIN2.MAIN.ROUTER.ACCESS_0630_221",value:"10"
+                    },{
+                        label:"T0000_CB.DOMAIN3.MAIN.ROUTER.ACCESS_0630_221",value:"11"
+                    },{
+                        label:"T0000_CB.DOMAIN4.MAIN.ROUTER.ACCESS_0630_221",value:"12"
+                    },{
+                        label:"T0000_CB.DOMAIN5.MAIN.ROUTER.ACCESS_0630_221",value:"13"
+                    },{
+                        label:"T0000_CB.DOMAIN6.MAIN.ROUTER.ACCESS_0630_221",value:"14"
+                    },{
+                        label:"T0000_CB.DOMAIN7.MAIN.ROUTER.ACCESS_0630_221",value:"15"
+                    },{
+                        label:"T0000_CB.DOMAIN8.MAIN.ROUTER.ACCESS_0630_221",value:"16"
+                    }
+
+
+                    ],
+                /*生产类型表显示字段*/
+                columns1: [
+
                     {
                         title: 'partition',
                         key: 'partition'

@@ -77,15 +77,16 @@ const routers = [
                 meta: {
                     title:"role"
                 }
-	    	},
-	    	{
-	    		path: 'test4',
-                name: 'test4',
-                component: (resolve) => require(['./views/test/test4.vue'], resolve),
-                meta: {
-                    title:"test4"
-                }
-	    	},
+	    	}
+			,
+			{
+				path: 'kafkaMonitor',
+				name: 'kafka',
+				component: (resolve) => require(['./views/kafka/kafkaMonitor.vue'], resolve),
+				meta: {
+					title:"kafka"
+				}
+			},
 	    	{
 	    		path: 'test5',
                 name: 'test5',
