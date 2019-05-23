@@ -1,7 +1,7 @@
 
 <template>
     <div>
-        <Table :columns="columns" :data="row.address"></Table>
+        <Table :columns="columns" :data="row.detail"></Table>
     </div>
 </template>
 <script>
