@@ -6,6 +6,7 @@
   "scripts": {
     "init": "webpack --progress --config webpack.dev.config.js",
     "dev": "webpack-dev-server --content-base ./ --open --inline --hot --host 127.0.0.1 --compress --history-api-fallback --config webpack.dev.config.js",
+    "prod": "webpack-dev-server --content-base ./ --open --inline --hot  --compress --history-api-fallback --config webpack.prod.config.js",
     "build": "webpack --progress --hide-modules --config webpack.prod.config.js",
     "lint": "eslint --fix --ext .js,.vue src"
   },
@@ -18,7 +19,7 @@
   "dependencies": {
     "vue": "^2.2.6",
     "vue-router": "^2.3.1",
-    "iview": "^2.0.0-rc.13",
+    "iview": "^3.4.2",
     "axios": "^0.16.2",
     "vuex": "^2.2.1",
     "vue-axios": "^2.0.2"
