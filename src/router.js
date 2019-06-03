@@ -80,19 +80,19 @@ const routers = [
 	    	}
 			,
 			{
-				path: 'kafkaMonitor',
+				path: 'kafkaMonitorCB',
 				name: 'kafka',
-				component: (resolve) => require(['./views/kafka/kafkaMonitor.vue'], resolve),
+				component: (resolve) => require(['./views/kafka/kafkaMonitorCB.vue'], resolve),
 				meta: {
 					title:"kafka"
 				}
 			},
 	    	{
-	    		path: 'test5',
-                name: 'test5',
-                component: (resolve) => require(['./views/test/test5.vue'], resolve),
+	    		path: 'kafkaMonitor',
+                name: 'kafka',
+                component: (resolve) => require(['./views/kafka/kafkaMonitor.vue'], resolve),
                 meta: {
-                    title:"test5"
+                    title:"kafka"
                 }
 	    	},
 	    	{
