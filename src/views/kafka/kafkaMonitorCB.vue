@@ -9,26 +9,31 @@
                 </Col>
                 <Col span="8"><Button type="primary" shape="circle" icon="ios-search" @click="getLags()">搜索</Button></Col>
             </Row>
-        <!--    <Row style="margin-bottom: 25px;">
-                <Col span="8">时间：
-                    <DatePicker type="date" placeholder="Select date" style="width: 200px"></DatePicker>
-                </Col>
-                <Col span="8"><Button type="primary" shape="circle" icon="ios-search" @click="getLags()">搜索</Button></Col>
-                </Row>-->
         </div>
         <div >
             <div style="padding: 10px 0;">
                         <template>
-                            <Table :columns="columns10" :data="data9"></Table>
+                            <Table :columns="columns10" :data="result"></Table>
                         </template>
-<!--
-                        <Table border :columns="columns1" :data="data1"  @on-selection-change="s=>{change(s)}" @on-row-dblclick="s=>{dblclick(s)}"></Table>
--->
             </div>
-                   <!-- <div style="text-align: right;">
-                        <Page :total="total" :page-size="pageInfo.pageSize" show-elevator show-total @on-change="e=>{pageSearch(e)}"></Page>
-                    </div>-->
         </div>
+        <Modal v-model="offsetModal" width="500" title="偏移量设置" @on-ok="settingOk()"  >
+            <Form  :label-width="80" >
+                <Form-item label="topic:">
+                    <Input v-model="topic"  type="text" style="width: 204px" disabled/>
+                </Form-item>
+
+                <Form-item label="partition:" prop="partition" >
+                    <Input v-model="partition" type="text" disabled></Input>
+                </Form-item>
+                <Form-item label="groupId:" prop="groupId">
+                    <Input v-model="groupId" type="text" disabled></Input>
+                </Form-item>
+                <Form-item label="currentOffset:" prop="currentOffset">
+                    <Input v-model="currentOffset" type="text" ></Input>
+                </Form-item>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -50,6 +55,11 @@
                     'T0000_CB.DOMAIN8.ROUTER.ACCESS_0630_221',
 
                 ],
+                topic:null,
+                groupId:null,
+                partition:null,
+                currentOffset:null,
+                offsetModal:false,
                 /*分页total属性绑定值*/
                 total:0,
                 /*loading*/
@@ -81,61 +91,7 @@
                         key: 'topic'
                     }
                 ],
-                data9: [
-                   /* {
-                        groupId: 'T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221',
-                        topic: 18,
-                        detail: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        detail: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    }
-                    ,
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        detail: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    }
-                    ,
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    },
-                    {
-                        groupId: 'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
-                        topic: 25,
-                        address: [{"partition":"0","lag":"10010"},{"partition":"1","lag":"10012"}]
-                    }*/
-                ],
+                result:[],
                 /*菜单列表*/
                 menuList:[{
                     label:"T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221",value:"T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221"
@@ -171,32 +127,52 @@
                     },{
                         label:"T0000_CB.DOMAIN8.MAIN.ROUTER.ACCESS_0630_221",value:"T0000_CB.DOMAIN8.MAIN.ROUTER.ACCESS_0630_221"
                     }
-
-
                     ],
                 /*生产类型表显示字段*/
                 columns1: [
 
                     {
                         title: 'partition',
-                        key: 'partition'
+                        key: 'partition',
+                        sortable: true
                     },
                     {
                         title: 'currentOffset',
-                        key: 'currentOffset'
+                        key: 'currentOffset',
+                        sortable: true
                     },
                     {
                         title: 'logEndOffset',
-                        key: 'logEndOffset'
+                        key: 'logEndOffset',
+                        sortable: true
                     },
                     {
                         title: 'lag',
-                        key: 'lag'
+                        key: 'lag',
+                        sortable: true
                     }
                     ,
                     {
                         title: 'operationTime',
                         key: 'operationTime'
+                    },
+                    {
+                        title: '调整偏移量',
+                        slot: 'action',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'info',
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.seek(params.row);
+                                        }
+                                    }
+                                },'seek')
+                            ]);
+                        }
                     }
                 ],
                 /*生产类型表数据*/
@@ -241,7 +217,37 @@
                     }
                 }).then(function (response) {
                    // alert("result"+response.data);
-                    this.data9=response.data;
+                    this.result=response.data;
+                    /*this.data1=response.data.data;
+                    this.total=response.data.totalCount;*/
+                }.bind(this)).catch(function (error) {
+                    alert(error);
+                });
+            },
+            seek(e){
+                this.groupId=e.groupId;
+                this.topic=e.topic;
+                this.partition=e.partition;
+                this.currentOffset=e.currentOffset;
+                this.offsetModal = true;
+
+            },
+            settingOk(){
+                alert("currentOffset"+this.currentOffset);
+
+                this.axios({
+                    method: 'post',
+                    url: '/seekOffset',
+                    async:false,
+                    params: {
+                        "groupId":this.groupId,
+                        "partition":this.partition,
+                        "currentOffset":this.currentOffset,
+                        "topic":this.topic
+                    }
+                }).then(function (response) {
+                    // alert("result"+response.data);
+                    this.result=response.data;
                     /*this.data1=response.data.data;
                     this.total=response.data.totalCount;*/
                 }.bind(this)).catch(function (error) {
