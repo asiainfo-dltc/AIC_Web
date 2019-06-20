@@ -96,11 +96,11 @@ const routers = [
                 }
 	    	},
 	    	{
-	    		path: 'test6',
-                name: 'test6',
-                component: (resolve) => require(['./views/test/test6.vue'], resolve),
+	    		path: 'hbaseQuery',
+                name: 'hbase',
+                component: (resolve) => require(['./views/hbase/hbaseQuery.vue'], resolve),
                 meta: {
-                    title:"test6"
+                    title:"hbase"
                 }
 	    	},
 	    ]

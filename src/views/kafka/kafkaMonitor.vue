@@ -4,10 +4,6 @@
 
             消费组：
             <Input  v-model="groupIds" type="text" placeholder="例:T0000_CB.DOMAIN1.ROUTER.ACCESS" style="width: 300px;margin-right: 50px"></Input>
- <!--           数据源：
-            <Select v-model="dataSource"  multiple style="width: 100px">
-                <Option v-for="item in dataSource" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>-->
             <Button type="primary" shape="circle" icon="ios-search" @click="getLags()">搜索</Button>
         </div>
         <div >
