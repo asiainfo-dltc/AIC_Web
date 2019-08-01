@@ -114,6 +114,12 @@
                         key: 'lag',
                         sortable: true
                     },
+
+                    {
+                        title: 'tableName',
+                        key: 'tableName',
+                        sortable: false
+                    },
                     {
                         title: 'operationTime',
                         key: 'operationTime'
@@ -208,6 +214,8 @@
                         "topic":this.topic
                     }
                 }).then(function (response) {
+
+                    this.getLags();
                     // alert("result"+response.data);
                     // this.result=response.data;
                     /*this.data1=response.data.data;

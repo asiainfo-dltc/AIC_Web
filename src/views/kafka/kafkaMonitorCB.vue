@@ -17,6 +17,8 @@
                         </template>
             </div>
         </div>
+        <Divider/>
+        <div id="main" style="width:100%;height:600px;"></div>
         <Modal v-model="offsetModal" width="500" title="偏移量设置" @on-ok="settingOk()"  >
             <Form  :label-width="80" >
                 <Form-item label="topic:">
@@ -46,7 +48,7 @@
 
                 /*选中的消费组*/
                 groupIds:['T0000_CB.DOMAIN1.ROUTER.ACCESS_0630_221',
-                'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
+                      'T0000_CB.DOMAIN2.ROUTER.ACCESS_0630_221',
                     'T0000_CB.DOMAIN3.ROUTER.ACCESS_0630_221',
                     'T0000_CB.DOMAIN4.ROUTER.ACCESS_0630_221',
                     'T0000_CB.DOMAIN5.ROUTER.ACCESS_0630_221',
@@ -60,6 +62,11 @@
                 partition:null,
                 currentOffset:null,
                 offsetModal:false,
+                legend:[],
+                xAxis:[],
+                series:[],
+                topics:[],
+                logEndOffset:[],
                 /*分页total属性绑定值*/
                 total:0,
                 /*loading*/
@@ -150,8 +157,12 @@
                         title: 'lag',
                         key: 'lag',
                         sortable: true
-                    }
-                    ,
+                    },
+                    {
+                        title: 'tableName',
+                        key: 'tableName',
+                        sortable: false
+                    },
                     {
                         title: 'operationTime',
                         key: 'operationTime'
@@ -181,7 +192,29 @@
         },
         mounted(){
             /*页面初始化调用方法*/
-            this.getLags();
+           this.getLagsHis();
+
+
+                   /* var option = {
+                        title: {
+                            text: 'ECharts 入门示例'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['销量']
+                        },
+                        xAxis: {
+                            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: '销量',
+                            type: 'bar',
+                            data: [5, 20, 36, 10, 10, 20]
+                        }]
+                    };*/
+
+                    // 使用刚指定的配置项和数据显示图表。
 
             /*this.axios({
                 method: 'get',
@@ -224,6 +257,60 @@
                     alert(error);
                 });
             },
+            getLagsHis(){
+                let myChart = this.$echarts.init(document.getElementById('main'));
+                //获取数据
+                this.axios({
+                    method: 'get',
+                    url: '/getLagsHis',
+                    async:false
+                    /*params: {
+                         "groupIds":JSON.stringify(this.groupIds)
+                     }*/
+                }).then(function (response) {
+                    // alert("result"+response.data);
+                    //   this.result=response.data;
+                    option.legend.data=response.data.legend;
+                    option.xAxis.data=response.data.xAxis;
+                    option.series=response.data.series;
+                    myChart.setOption(option);
+                }.bind(this)).catch(function (error) {
+                    alert(error);
+                });
+
+                let option = {
+                    /*      title: {
+                              text: 'TOPIC数据量'
+                          },*/
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data:[]
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data:  this.xAxis
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    // series: this.series
+                    series: []
+                };
+            },
             seek(e){
                 this.groupId=e.groupId;
                 this.topic=e.topic;
@@ -233,13 +320,13 @@
 
             },
             settingOk(){
-                alert("currentOffset"+this.currentOffset);
+               // alert("currentOffset"+this.currentOffset);
 
                 this.axios({
                     method: 'post',
                     url: '/seekOffset',
                     async:false,
-                    params: {
+                    data: {
                         "groupId":this.groupId,
                         "partition":this.partition,
                         "currentOffset":this.currentOffset,

@@ -1,13 +1,10 @@
-<style type="text/css">
-    .test1{
-        /*margin: 20px 20px 20px 20px;*/     
-        background: #f44336;
-        height: 100%;
-        width: 100%;
-    }
-</style>
+
 <template>
-    <div class="test1">
+
+
+    <div >
+
+        <Button  @click="test()">测试redis</Button>
     </div>
 </template>
 <script>
@@ -18,7 +15,22 @@
             }
         },
         methods: {
-           
+            test(){
+                this.axios({
+                    method: 'get',
+                    url: '/testRedis',
+                    async:false,
+                    params: {
+                    }
+                }).then(function (response) {
+                    // alert("result"+response.data);
+                    this.result=response.data;
+                    /*this.data1=response.data.data;
+                    this.total=response.data.totalCount;*/
+                }.bind(this)).catch(function (error) {
+                    alert(error);
+                });
+            }
         }   
     };
 </script>

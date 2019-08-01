@@ -103,6 +103,14 @@ const routers = [
                     title:"hbase"
                 }
 	    	},
+			{
+				path: 'test',
+				name: 'test',
+				component: (resolve) => require(['./views/test/test1.vue'], resolve),
+				meta: {
+					title:"test"
+				}
+			},
 	    ]
 	}
 ];
