@@ -8,9 +8,13 @@ import axios from './axios';
 import VueAxios from 'vue-axios';
 import store from './store/store';
 
+import echarts from 'echarts';
+
 Vue.use(VueAxios,axios);
 
 Vue.use(iView);
+Vue.prototype.$echarts = echarts;
+//Vue.use(echarts);
 
 new Vue({
     el: '#app',
